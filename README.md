@@ -1,2 +1,2 @@
-# apiproxy
-Python REST client library
+# apyproxy
+Python REST client library inspiredby xmlrpclib
