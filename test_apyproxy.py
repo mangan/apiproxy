@@ -67,7 +67,7 @@ class ApyProxyTest(unittest.TestCase):
             self.assertEqual(claimed["args"], params)
 
             with self.assertRaises(requests.exceptions.HTTPError):
-                r.status._("404").get()
+                r.status._(404).get()
 
         session = requests.Session()
         session.suffix = ".xml"
