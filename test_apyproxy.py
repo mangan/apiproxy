@@ -95,7 +95,7 @@ class ApyProxyTest(unittest.TestCase):
         baseurl = "https://httpbin.org"
         api = ApyProxy(baseurl)
 
-        @bind(ApyProxy, "/anything/{name}/chat", "say_hello")
+        @bind(api, "/anything/{name}/chat", "say_hello")
         def say_hello(chat, msg):
             return "Hello %s, %s" % (context(chat, "name"), msg)
 

@@ -7,11 +7,11 @@ from urllib.parse import urljoin, urlsplit
 import requests
 
 
-def bind(cls, relpath, name):
+def bind(obj, relpath, name):
     def decorator(fn):
-        if cls._ApyProxy__bindings is None:
-            cls._ApyProxy__bindings = {}
-        cls._ApyProxy__bindings[name] = (relpath, fn)
+        if obj._ApyProxy__bindings is None:
+            obj._ApyProxy__bindings = {}
+        obj._ApyProxy__bindings[name] = (relpath, fn)
         return fn
     return decorator
 
@@ -73,6 +73,7 @@ class ApyProxy:
             url = os.path.join(self.__url.rstrip("/"), relpath)
         proxy = ApyProxy(url, self.__session)
         proxy._ApyProxy__parent = self
+        proxy._ApyProxy__bindings = self.__bindings
         return proxy
 
     @property
