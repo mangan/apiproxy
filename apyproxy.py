@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 import os.path
 import re
 
@@ -7,11 +8,11 @@ import requests
 
 
 def bind(obj, relpath, name):
-    def decorator(fn):
+    def decorator(func):
         if obj._ApyProxy__bindings is None:
             obj._ApyProxy__bindings = {}
-        obj._ApyProxy__bindings[name] = (relpath, fn)
-        return fn
+        obj._ApyProxy__bindings[name] = (relpath, func)
+        return func
     return decorator
 
 
@@ -23,17 +24,19 @@ class UnboundCallError(Exception):
     pass
 
 
+# pylint: disable=too-few-public-methods
 class _Pattern:
     def __init__(self, pattern):
         self.pattern = pattern
 
     def _tr(self):
-        return "%s$" % re.sub('\{([^/]*)\}', r'(?P<\1>[^/]*)', self.pattern)
+        return "%s$" % re.sub(r'\{([^/]*)\}', r'(?P<\1>[^/]*)', self.pattern)
 
     def match(self, relpath):
         return re.match(self._tr(), relpath)
 
 
+# pylint: disable=attribute-defined-outside-init
 class ApyProxy:
     __bindings = None
 
@@ -50,20 +53,22 @@ class ApyProxy:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.__session.__exit__(exc_type, exc_val, exc_tb)
 
+    # pylint: disable=unsupported-membership-test,unsubscriptable-object
     def __call__(self, *args, **kwargs):
         call = self.__url.rstrip("/").split("/")[-1]
         here = urlsplit(self.__parent._url).path
         if call in self.__bindings:
-            pattern, fn = self.__bindings[call]
+            pattern, func = self.__bindings[call]
             match = _Pattern(pattern).match(here)
             if match:
                 self.__context = match
-                return fn(self, *args, **kwargs)
+                return func(self, *args, **kwargs)
         raise UnboundCallError(f"'{call}' is not bound to '{here}'")
 
     def __getattr__(self, name):
         return self._(name)
 
+    # pylint: disable=invalid-name
     def _(self, relpath):
         relpath = str(relpath)
         if relpath.startswith("/"):
