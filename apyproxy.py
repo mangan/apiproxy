@@ -1,6 +1,5 @@
 import os.path
 import re
-import unittest
 
 from urllib.parse import urljoin, urlsplit
 

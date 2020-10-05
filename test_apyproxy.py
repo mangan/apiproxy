@@ -1,3 +1,5 @@
+import unittest
+
 import requests
 
 from apyproxy import *
