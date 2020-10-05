@@ -1,3 +1,5 @@
+import requests
+
 from apyproxy import *
 from apyproxy import _Pattern
 
@@ -61,6 +63,9 @@ class ApyProxyTest(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             claimed = response.json()
             self.assertEqual(claimed["args"], params)
+
+            with self.assertRaises(requests.exceptions.HTTPError):
+                r.status._("404").get()
 
         session = requests.Session()
         session.suffix = ".xml"

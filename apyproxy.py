@@ -38,10 +38,11 @@ class _Pattern:
 class ApyProxy:
     __bindings = None
 
-    def __init__(self, url, session=None):
+    def __init__(self, url, session=None, force_raise=True):
         self.__url = url
         self.__session = session or requests.Session()
         self.__parent = None
+        self.__raise = force_raise
 
     def __enter__(self):
         self.__session.__enter__()
@@ -82,7 +83,10 @@ class ApyProxy:
         return url
 
     def request(self, method, **kwargs):
-        return self.__session.request(method, self._url, **kwargs)
+        response = self.__session.request(method, self._url, **kwargs)
+        if self.__raise:
+            response.raise_for_status()
+        return response
 
     def get(self, params=None, **kwargs):
         return self.request("GET", params=params, **kwargs)
