@@ -6,6 +6,7 @@ from urllib.parse import urljoin, urlsplit
 
 import requests
 
+__all__ = ["bind", "context", "UnboundCallError", "ApyProxy"]
 
 def bind(obj, relpath, name):
     def decorator(func):
@@ -36,7 +37,6 @@ class _Pattern:
         return re.match(self._tr(), relpath)
 
 
-# pylint: disable=attribute-defined-outside-init
 class ApyProxy:
     __bindings = None
 
@@ -45,6 +45,7 @@ class ApyProxy:
         self.__session = session or requests.Session()
         self.__parent = None
         self.__raise = force_raise
+        self.__context = None
 
     def __enter__(self):
         self.__session.__enter__()
@@ -68,7 +69,7 @@ class ApyProxy:
     def __getattr__(self, name):
         return self._(name)
 
-    # pylint: disable=invalid-name
+    # pylint: disable=invalid-name,attribute-defined-outside-init
     def _(self, relpath):
         relpath = str(relpath)
         if relpath.startswith("/"):
