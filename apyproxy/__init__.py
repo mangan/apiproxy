@@ -76,7 +76,7 @@ class ApyProxy:
             url = urljoin(self.__url, relpath)
         else:
             url = os.path.join(self.__url.rstrip("/"), relpath)
-        proxy = ApyProxy(url, self.__session)
+        proxy = ApyProxy(url, self.__session, self.__raise)
         proxy._ApyProxy__parent = self
         proxy._ApyProxy__bindings = self.__bindings
         return proxy
