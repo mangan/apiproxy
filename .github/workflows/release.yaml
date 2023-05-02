@@ -13,5 +13,5 @@ jobs:
         run: pip install poetry
       - name: publish
         run: poetry publish -u __token__ -p $PYPI_API_TOKEN
-        with:
+        env:
           PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
